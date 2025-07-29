@@ -1,0 +1,2 @@
+ANALYZER_LLM_MODEL='gemini-1.5-pro'
+DOCUMENTER_LLM_MODEL='gemini-1.5-pro'

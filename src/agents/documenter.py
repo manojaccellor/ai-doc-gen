@@ -8,6 +8,7 @@ from pydantic_ai import Agent
 from pydantic_ai.models import Model
 from pydantic_ai.models.gemini import GeminiModel
 from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.google_gla import GoogleGLAProvider
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.settings import ModelSettings
 
@@ -133,9 +134,10 @@ class DocumenterAgent:
         api_key = config.DOCUMENTER_LLM_API_KEY
 
         if "gemini" in model_name:
+            # Try using standard GoogleGLAProvider first
             model = GeminiModel(
                 model_name=model_name,
-                provider=CustomGeminiGLA(api_key=api_key, base_url=base_url),
+                provider=GoogleGLAProvider(api_key=api_key),
             )
         else:
             model = OpenAIModel(

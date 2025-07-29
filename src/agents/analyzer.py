@@ -8,12 +8,15 @@ from pydantic import BaseModel, Field
 from pydantic_ai import Agent, UnexpectedModelBehavior
 from pydantic_ai.agent import AgentRunResult
 from pydantic_ai.models import Model
+from pydantic_ai.models.gemini import GeminiModel
 from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.google_gla import GoogleGLAProvider
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.settings import ModelSettings
 
 import config
 from utils import Logger, PromptManager
+from utils.custom_models.gemini_provider import CustomGeminiGLA
 
 from .tools import FileReadTool, ListFilesTool
 
@@ -155,7 +158,10 @@ class AnalyzerAgent:
             if not file_path.exists():
                 file_path.parent.mkdir(parents=True, exist_ok=True)
 
-            with open(file_path, "w") as f:
+            # with open(file_path, "w") as f:
+            #     f.write(result.output.markdown_content)
+            
+            with open(file_path, "w", encoding="utf-8") as f:
                 f.write(result.output.markdown_content)
 
                 Logger.info(f"{agent.name} result saved to {file_path}")
@@ -170,13 +176,24 @@ class AnalyzerAgent:
 
     @property
     def _llm_model(self) -> Tuple[Model, ModelSettings]:
-        model = OpenAIModel(
-            model_name=config.ANALYZER_LLM_MODEL,
-            provider=OpenAIProvider(
-                base_url=config.ANALYZER_LLM_BASE_URL,
-                api_key=config.ANALYZER_LLM_API_KEY,
-            ),
-        )
+        model_name = config.ANALYZER_LLM_MODEL
+        base_url = config.ANALYZER_LLM_BASE_URL
+        api_key = config.ANALYZER_LLM_API_KEY
+
+        if "gemini" in model_name:
+            # Try using standard GoogleGLAProvider first
+            model = GeminiModel(
+                model_name=model_name,
+                provider=GoogleGLAProvider(api_key=api_key),
+            )
+        else:
+            model = OpenAIModel(
+                model_name=model_name,
+                provider=OpenAIProvider(
+                    base_url=base_url,
+                    api_key=api_key,
+                ),
+            )
 
         settings = ModelSettings(
             temperature=0.0,
