@@ -1,5 +1,7 @@
 # AI Documentation Generator
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/divar-ir/ai-doc-gen)
+
 An AI-powered code documentation generator that automatically analyzes repositories and creates comprehensive documentation using advanced language models. The system employs a multi-agent architecture to perform specialized code analysis and generate structured documentation.
 
 ## Table of Contents

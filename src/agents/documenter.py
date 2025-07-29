@@ -112,9 +112,14 @@ class DocumenterAgent:
             if not file_path.exists():
                 file_path.parent.mkdir(parents=True, exist_ok=True)
 
-            with open(file_path, "w") as f:
+            # with open(file_path, "w") as f:
+            #     Logger.info(f"Writing to {file_path}")
+            #     f.write(result.output.markdown_content)
+            
+            with open(file_path, "w", encoding="utf-8") as f:
                 Logger.info(f"Writing to {file_path}")
                 f.write(result.output.markdown_content)
+
 
                 trace.get_current_span().set_attribute(f"{agent.name} result", result.output.markdown_content)
 
